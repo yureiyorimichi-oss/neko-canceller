@@ -2,30 +2,151 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ネコ語コンバーター</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
-        #app-container { width: 100vw; max-width: 450px; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px; box-sizing: border-box; }
-        .logo-img { width: 250px; height: auto; cursor: pointer; margin-bottom: 70px; }
-        #illustration-frame { width: 320px; height: 320px; background: radial-gradient(circle, #222 0%, #000 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
-        #visual-layers { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .illust-layer { position: absolute; max-width: 80%; max-height: 80%; object-fit: contain; }
-        .assets-wrapper { position: absolute; top: -60px; display: none; justify-content: center; align-items: center; width: 100%; z-index: 10; }
+        html, body {
+            background-color: #000;
+            color: #fff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        #app-container {
+            width: 100vw;
+            height: 100dvh;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-top: 2dvh;
+            margin-bottom: 100px; 
+            flex-shrink: 0;
+        }
+
+        .logo-img {
+            width: 250px;
+            height: auto;
+            cursor: pointer;
+        }
+
+        #illustration-frame {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, #222 0%, #000 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 1; 
+            min-height: 200px; 
+        }
+
+        #visual-layers {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .illust-layer {
+            position: absolute;
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        .assets-wrapper {
+            position: absolute;
+            top: -60px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            z-index: 10;
+        }
+
         .extra-layer { width: 50px; height: auto; }
         .size-original { width: auto; max-width: 80px; }
         .teleport-box { width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; position: relative; }
         .gap-2px { margin: 0 2px; } .center-gap-50 { margin: 0 25px; } 
+
         @keyframes randomRight { 0%, 25% { transform: translate(5px, 5px); } 26%, 50% { transform: translate(15px, -10px); } 51%, 75% { transform: translate(-5px, 15px); } 76%, 100% { transform: translate(10px, -5px); } }
         @keyframes randomLeft { 0%, 30% { transform: translate(-10px, -5px); } 31%, 60% { transform: translate(5px, 10px); } 61%, 85% { transform: translate(-15px, 5px); } 86%, 100% { transform: translate(0px, -10px); } }
         .anim-right { animation: randomRight 5.2s step-end infinite; } .anim-left { animation: randomLeft 6.4s step-end infinite; }
-        .status-text { position: absolute; bottom: -60px; font-size: 14px; letter-spacing: 0.2em; font-weight: bold; }
-        #controls-panel { width: 100%; display: flex; justify-content: space-around; align-items: center; margin-top: 40px; }
+
+        .status-text {
+            position: absolute;
+            bottom: -60px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 0.2em;
+            font-weight: bold;
+        }
+
+        #bottom-ui {
+            margin-top: auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 30px;
+            flex-shrink: 0;
+        }
+
+        #controls-panel {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
         .param-control { display: flex; flex-direction: column; align-items: center; width: 60px; }
-        .arrow-btn { background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; }
+        .arrow-btn { background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .param-label { font-size: 10px; margin-top: 5px; } .param-value { font-size: 24px; font-weight: bold; }
-        #main-action-btn { width: 110px; height: 110px; background-color: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        
+        #main-action-btn { 
+            width: 110px; 
+            height: 110px; 
+            background-color: #fff; 
+            border-radius: 50%; 
+            border: none; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            -webkit-tap-highlight-color: transparent;
+        }
         #main-action-btn img { width: 85%; height: auto; }
-        #mode-nav { display: flex; justify-content: center; gap: 40px; margin-bottom: 20px; }
+
+        #mode-nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
         .mode-item { opacity: 0.4; cursor: pointer; font-weight: bold; font-size: 18px; padding-bottom: 5px; border-bottom: 3px solid transparent; }
         .mode-item.active { opacity: 1; border-bottom: 3px solid #fff; }
     </style>
@@ -33,7 +154,10 @@
 <body>
 
 <div id="app-container">
-    <header><img src="img/neko-canceller_01.png" alt="ロゴ" class="logo-img" onclick="location.reload()"></header>
+    <header>
+        <img src="img/neko-canceller_01.png" alt="ロゴ" class="logo-img" onclick="location.reload()">
+    </header>
+
     <div id="illustration-frame">
         <div id="visual-layers">
             <div id="wrapper-normal" class="assets-wrapper" style="display: flex;">
@@ -64,26 +188,30 @@
         </div>
         <p class="status-text" id="status-label">集音中〜</p>
     </div>
-    <div id="controls-panel">
-        <div class="param-control">
-            <button class="arrow-btn" onclick="adjust('gain', 1)">↑</button>
-            <div class="param-label">集音力</div>
-            <div class="param-value" id="gain-val">1</div>
-            <button class="arrow-btn" onclick="adjust('gain', -1)">↓</button>
+
+    <div id="bottom-ui">
+        <div id="controls-panel">
+            <div class="param-control">
+                <button class="arrow-btn" onclick="adjust('gain', 1)">↑</button>
+                <div class="param-label">集音力</div>
+                <div class="param-value" id="gain-val">1</div>
+                <button class="arrow-btn" onclick="adjust('gain', -1)">↓</button>
+            </div>
+            <button id="main-action-btn"><img src="img/neko-canceller_29.png" id="btn-icon"></button>
+            <div class="param-control">
+                <button class="arrow-btn" onclick="adjust('threshold', 1)">↑</button>
+                <div class="param-label">音判定</div>
+                <div class="param-value" id="threshold-val">5</div>
+                <button class="arrow-btn" onclick="adjust('threshold', -1)">↓</button>
+            </div>
         </div>
-        <button id="main-action-btn"><img src="img/neko-canceller_29.png" id="btn-icon"></button>
-        <div class="param-control">
-            <button class="arrow-btn" onclick="adjust('threshold', 1)">↑</button>
-            <div class="param-label">音判定</div>
-            <div class="param-value" id="threshold-val">5</div>
-            <button class="arrow-btn" onclick="adjust('threshold', -1)">↓</button>
-        </div>
+
+        <nav id="mode-nav">
+            <span class="mode-item" data-mode="なみ" onclick="selectMode(this)">なみ</span>
+            <span class="mode-item active" data-mode="ねこ" onclick="selectMode(this)">ねこ</span>
+            <span class="mode-item" data-mode="たきび" onclick="selectMode(this)">たきび</span>
+        </nav>
     </div>
-    <nav id="mode-nav">
-        <span class="mode-item" data-mode="なみ" onclick="selectMode(this)">なみ</span>
-        <span class="mode-item active" data-mode="ねこ" onclick="selectMode(this)">ねこ</span>
-        <span class="mode-item" data-mode="たきび" onclick="selectMode(this)">たきび</span>
-    </nav>
 </div>
 
 <script>
@@ -102,23 +230,13 @@
 
     async function preloadFiles() {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        // 新しいファイル名（nami.mp3, takibi.mp3）を反映
-        const files = { 
-            "ねこ": "meow.mp3", 
-            "なみ": "nami.mp3", 
-            "たきび": "takibi.mp3" 
-        };
-        
+        const files = { "ねこ": "meow.mp3", "なみ": "nami.mp3", "たきび": "takibi.mp3" };
         for (const [key, url] of Object.entries(files)) {
             try {
                 const res = await fetch(url);
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const buf = await res.arrayBuffer();
                 audioBuffers[key] = await audioCtx.decodeAudioData(buf);
-                console.log(`${key} (${url}) loaded successfully.`);
-            } catch (e) { 
-                console.error(`${key} の読み込みに失敗しました。ファイルが '${url}' という名前で正しく配置されているか確認してください。`, e); 
-            }
+            } catch (e) { console.error(`${key} loading failed:`, e); }
         }
     }
 
@@ -139,51 +257,43 @@
     function detectSound() {
         if (!analyser) return;
         analyser.getByteFrequencyData(dataArray);
-        
         let sumSquares = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-            sumSquares += dataArray[i] * dataArray[i];
-        }
+        for (let i = 0; i < dataArray.length; i++) { sumSquares += dataArray[i] * dataArray[i]; }
         let volume = Math.sqrt(sumSquares / dataArray.length);
-        
         const userThreshold = parseInt(document.getElementById('threshold-val').innerText);
         const threshold = userThreshold * 4 + 15; 
-
         const now = Date.now();
-        if (isConverting && now > ignoreMicUntil && volume > threshold && !isTidying) {
-            triggerEffect();
-        }
+        if (isConverting && now > ignoreMicUntil && volume > threshold && !isTidying) { triggerEffect(); }
         requestAnimationFrame(detectSound);
     }
 
     function triggerEffect() {
         const buffer = audioBuffers[currentMode];
-        if (!buffer || isTidying) return;
-        
+        if (!buffer || isTidying || !isConverting) return;
         isTidying = true;
+        
         const source = audioCtx.createBufferSource();
         source.buffer = buffer;
         source.connect(masterGain);
-
+        
+        // 再生前に音量をユーザー設定値に戻す
         const gainVal = parseInt(document.getElementById('gain-val').innerText);
-        masterGain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        masterGain.gain.setTargetAtTime(gainVal, audioCtx.currentTime, 0.01);
 
         if (currentMode === "ねこ") {
             source.playbackRate.value = 0.8 + Math.random() * 0.7;
             source.start(0);
-            setTimeout(() => { isTidying = false; }, 400);
-        } 
-        else if (currentMode === "なみ") {
+            setTimeout(() => { isTidying = false; }, 300);
+        } else if (currentMode === "なみ") {
             const duration = 5 + Math.random() * 3;
-            const offset = Math.random() * Math.max(0, source.buffer.duration - duration);
+            const offset = Math.random() * Math.max(0, buffer.duration - duration);
             source.start(0, offset, duration);
-            setTimeout(() => { isTidying = false; }, 2000); 
-        } 
-        else if (currentMode === "たきび") {
+            setTimeout(() => { isTidying = false; }, 1500); 
+        } else if (currentMode === "たきび") {
             source.start(0);
-            // たきびの音の長さに合わせて少し長めにロック（連打防止）
-            setTimeout(() => { isTidying = false; }, 500); 
+            setTimeout(() => { isTidying = false; }, 200); 
         }
+        source.onended = () => { source.disconnect(); };
     }
 
     function updateVisuals() {
@@ -191,10 +301,19 @@
         if (isConverting) {
             baseLayer.src = 'img/neko-canceller_03.png';
             btnIcon.src = 'img/neko-canceller_30.png';
-            statusLabel.innerText = 'ネコ語変換中！';
+            
+            if (currentMode === "ねこ") statusLabel.innerText = 'ネコ語変換中！';
+            else if (currentMode === "なみ") statusLabel.innerText = 'なみ変換中！';
+            else if (currentMode === "たきび") statusLabel.innerText = 'たきび変換中！';
+
             mainBtn.style.backgroundColor = '#ffdb4d';
             wrappers[currentMode].style.display = 'flex';
         } else {
+            // 強制停止処理：マスターゲインを即座に0にする
+            if (masterGain) {
+                masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
+            }
+            
             baseLayer.src = 'img/neko-canceller_04.png';
             btnIcon.src = 'img/neko-canceller_29.png';
             statusLabel.innerText = '集音中〜';
@@ -207,7 +326,6 @@
         if (!audioCtx) await preloadFiles();
         if (audioCtx.state === 'suspended') audioCtx.resume();
         if (!analyser) await initMicrophone();
-        
         isConverting = !isConverting;
         ignoreMicUntil = Date.now() + 800; 
         isTidying = false; 
@@ -229,6 +347,10 @@
         let val = parseInt(target.innerText);
         val = Math.max(1, Math.min(20, val + amount));
         target.innerText = val;
+        // 再生中に音量を変更した場合も反映
+        if (type === 'gain' && masterGain && isConverting) {
+            masterGain.gain.setTargetAtTime(val, audioCtx.currentTime, 0.1);
+        }
     }
 </script>
 </body>
