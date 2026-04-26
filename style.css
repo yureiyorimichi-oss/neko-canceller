@@ -1,0 +1,124 @@
+/* 全体設定 */
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#app-container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    padding: 20px;
+}
+
+/* ロゴ */
+.logo-img {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* 中央の丸いフレーム */
+#illustration-frame {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.illust-layer {
+    width: auto;
+    max-width: 70%;
+    height: auto;
+}
+
+.status-text {
+    margin-top: 10px;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+/* 操作パネル（横並び） */
+#controls-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.param-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+}
+
+.arrow-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.param-label {
+    font-size: 10px;
+    margin: 2px 0;
+}
+
+.param-value {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* 中央の白いボタン */
+#henkan-main-btn {
+    width: 100px;
+    height: 100px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+}
+
+#henkan-main-btn img {
+    width: 60%;
+    height: auto;
+}
+
+/* モード選択 */
+#mode-nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 18px;
+}
+
+.mode-item {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.mode-item.active {
+    opacity: 1;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 5px;
+}

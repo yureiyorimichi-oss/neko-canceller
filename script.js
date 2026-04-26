@@ -97,7 +97,7 @@ function stopApp() {
         microphone.disconnect();
     }
     statusDiv.innerText = "";
-    btnImg.src = "へんかんボタン.png"; // ここも確認
+    btnImg.src = "img/neko-canceller_29.png"; // ここも確認
     groupBefore.style.display = "block";
     groupAfter.style.display = "none";
 }
