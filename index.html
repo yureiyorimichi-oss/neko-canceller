@@ -29,14 +29,17 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
-            position: relative;
+            /* 要素同士を等間隔、または端に寄せる設定 */
+            justify-content: space-between; 
         }
 
+        /* 1. ロゴエリア */
         header {
             width: 100%;
             display: flex;
             justify-content: center;
             padding-top: 2dvh;
+            /* ロゴ下の余白を100px確保 */
             margin-bottom: 100px; 
             flex-shrink: 0;
         }
@@ -47,17 +50,26 @@
             cursor: pointer;
         }
 
+        /* 2. メインビジュアルエリア（イラスト＋テキスト） */
+        #visual-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1; /* 中央部分を柔軟に広げる */
+            justify-content: flex-start;
+        }
+
         #illustration-frame {
-            width: 320px;
-            height: 320px;
+            width: 300px;
+            height: 300px;
             background: radial-gradient(circle, #222 0%, #000 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            flex-shrink: 1; 
-            min-height: 200px; 
+            flex-shrink: 0;
         }
 
         #visual-layers {
@@ -76,16 +88,37 @@
             object-fit: contain;
         }
 
-        .assets-wrapper {
-            position: absolute;
-            top: -60px;
-            display: none;
-            justify-content: center;
-            align-items: center;
+        /* ステータステキスト：イラストのすぐ下に配置 */
+        .status-text {
+            margin-top: 25px; /* イラスト枠との適度な距離 */
             width: 100%;
-            z-index: 10;
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 0.2em;
+            font-weight: bold;
+            flex-shrink: 0;
         }
 
+        /* 3. 下部操作パネル */
+        #bottom-ui {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 40px;
+            flex-shrink: 0;
+        }
+
+        #controls-panel {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        /* 以下、アニメーションやボタン等のスタイルは維持 */
+        .assets-wrapper { position: absolute; top: -60px; display: none; justify-content: center; align-items: center; width: 100%; z-index: 10; }
         .extra-layer { width: 50px; height: auto; }
         .size-original { width: auto; max-width: 80px; }
         .teleport-box { width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; position: relative; }
@@ -95,58 +128,17 @@
         @keyframes randomLeft { 0%, 30% { transform: translate(-10px, -5px); } 31%, 60% { transform: translate(5px, 10px); } 61%, 85% { transform: translate(-15px, 5px); } 86%, 100% { transform: translate(0px, -10px); } }
         .anim-right { animation: randomRight 5.2s step-end infinite; } .anim-left { animation: randomLeft 6.4s step-end infinite; }
 
-        .status-text {
-            position: absolute;
-            bottom: -60px;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            letter-spacing: 0.2em;
-            font-weight: bold;
-        }
-
-        #bottom-ui {
-            margin-top: auto;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-bottom: 30px;
-            flex-shrink: 0;
-        }
-
-        #controls-panel {
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
         .param-control { display: flex; flex-direction: column; align-items: center; width: 60px; }
         .arrow-btn { background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .param-label { font-size: 10px; margin-top: 5px; } .param-value { font-size: 24px; font-weight: bold; }
         
         #main-action-btn { 
-            width: 110px; 
-            height: 110px; 
-            background-color: #fff; 
-            border-radius: 50%; 
-            border: none; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            -webkit-tap-highlight-color: transparent;
+            width: 110px; height: 110px; background-color: #fff; border-radius: 50%; border: none; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
         }
         #main-action-btn img { width: 85%; height: auto; }
 
-        #mode-nav {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            width: 100%;
-        }
+        #mode-nav { display: flex; justify-content: center; gap: 40px; width: 100%; }
         .mode-item { opacity: 0.4; cursor: pointer; font-weight: bold; font-size: 18px; padding-bottom: 5px; border-bottom: 3px solid transparent; }
         .mode-item.active { opacity: 1; border-bottom: 3px solid #fff; }
     </style>
@@ -158,33 +150,35 @@
         <img src="img/neko-canceller_01.png" alt="ロゴ" class="logo-img" onclick="location.reload()">
     </header>
 
-    <div id="illustration-frame">
-        <div id="visual-layers">
-            <div id="wrapper-normal" class="assets-wrapper" style="display: flex;">
-                <img src="img/neko-canceller_06.png" class="extra-layer">
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_08.png" class="extra-layer anim-right"></div>
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_09.png" class="extra-layer anim-left"></div>
-                <img src="img/neko-canceller_07.png" class="extra-layer">
+    <div id="visual-section">
+        <div id="illustration-frame">
+            <div id="visual-layers">
+                <div id="wrapper-normal" class="assets-wrapper" style="display: flex;">
+                    <img src="img/neko-canceller_06.png" class="extra-layer">
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_08.png" class="extra-layer anim-right"></div>
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_09.png" class="extra-layer anim-left"></div>
+                    <img src="img/neko-canceller_07.png" class="extra-layer">
+                </div>
+                <div id="wrapper-neko" class="assets-wrapper">
+                    <img src="img/neko-canceller_10.png" class="extra-layer">
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_12.png" class="extra-layer anim-right"></div>
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_13.png" class="extra-layer anim-left"></div>
+                    <img src="img/neko-canceller_11.png" class="extra-layer">
+                </div>
+                <div id="wrapper-nami" class="assets-wrapper">
+                    <img src="img/neko-canceller_14.png" class="extra-layer size-original">
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_16.png" class="extra-layer anim-right"></div>
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_17.png" class="extra-layer anim-left"></div>
+                    <img src="img/neko-canceller_15.png" class="extra-layer size-original">
+                </div>
+                <div id="wrapper-takibi" class="assets-wrapper">
+                    <img src="img/neko-canceller_18.png" class="extra-layer size-original">
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_20.png" class="extra-layer anim-right"></div>
+                    <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_21.png" class="extra-layer anim-left"></div>
+                    <img src="img/neko-canceller_19.png" class="extra-layer size-original">
+                </div>
+                <img src="img/neko-canceller_04.png" id="base-layer" class="illust-layer">
             </div>
-            <div id="wrapper-neko" class="assets-wrapper">
-                <img src="img/neko-canceller_10.png" class="extra-layer">
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_12.png" class="extra-layer anim-right"></div>
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_13.png" class="extra-layer anim-left"></div>
-                <img src="img/neko-canceller_11.png" class="extra-layer">
-            </div>
-            <div id="wrapper-nami" class="assets-wrapper">
-                <img src="img/neko-canceller_14.png" class="extra-layer size-original">
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_16.png" class="extra-layer anim-right"></div>
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_17.png" class="extra-layer anim-left"></div>
-                <img src="img/neko-canceller_15.png" class="extra-layer size-original">
-            </div>
-            <div id="wrapper-takibi" class="assets-wrapper">
-                <img src="img/neko-canceller_18.png" class="extra-layer size-original">
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_20.png" class="extra-layer anim-right"></div>
-                <div class="teleport-box gap-2px center-gap-50"><img src="img/neko-canceller_21.png" class="extra-layer anim-left"></div>
-                <img src="img/neko-canceller_19.png" class="extra-layer size-original">
-            </div>
-            <img src="img/neko-canceller_04.png" id="base-layer" class="illust-layer">
         </div>
         <p class="status-text" id="status-label">集音中〜</p>
     </div>
@@ -215,6 +209,7 @@
 </div>
 
 <script>
+    /* JavaScript部分は「PC連続再生対応」「強制停止」「テキスト切替」をすべて維持 */
     let isConverting = false;
     let currentMode = "ねこ";
     let audioCtx, analyser, dataArray, masterGain;
@@ -270,16 +265,14 @@
     function triggerEffect() {
         const buffer = audioBuffers[currentMode];
         if (!buffer || isTidying || !isConverting) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         isTidying = true;
-        
         const source = audioCtx.createBufferSource();
         source.buffer = buffer;
         source.connect(masterGain);
-        
-        // 再生前に音量をユーザー設定値に戻す
         const gainVal = parseInt(document.getElementById('gain-val').innerText);
-        masterGain.gain.setTargetAtTime(gainVal, audioCtx.currentTime, 0.01);
-
+        masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+        masterGain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
         if (currentMode === "ねこ") {
             source.playbackRate.value = 0.8 + Math.random() * 0.7;
             source.start(0);
@@ -301,19 +294,17 @@
         if (isConverting) {
             baseLayer.src = 'img/neko-canceller_03.png';
             btnIcon.src = 'img/neko-canceller_30.png';
-            
             if (currentMode === "ねこ") statusLabel.innerText = 'ネコ語変換中！';
             else if (currentMode === "なみ") statusLabel.innerText = 'なみ変換中！';
             else if (currentMode === "たきび") statusLabel.innerText = 'たきび変換中！';
-
             mainBtn.style.backgroundColor = '#ffdb4d';
             wrappers[currentMode].style.display = 'flex';
-        } else {
-            // 強制停止処理：マスターゲインを即座に0にする
             if (masterGain) {
-                masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
+                const gainVal = parseInt(document.getElementById('gain-val').innerText);
+                masterGain.gain.setTargetAtTime(gainVal, audioCtx.currentTime, 0.05);
             }
-            
+        } else {
+            if (masterGain) { masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01); }
             baseLayer.src = 'img/neko-canceller_04.png';
             btnIcon.src = 'img/neko-canceller_29.png';
             statusLabel.innerText = '集音中〜';
@@ -324,7 +315,7 @@
 
     mainBtn.addEventListener('click', async () => {
         if (!audioCtx) await preloadFiles();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (audioCtx.state === 'suspended') await audioCtx.resume();
         if (!analyser) await initMicrophone();
         isConverting = !isConverting;
         ignoreMicUntil = Date.now() + 800; 
@@ -336,10 +327,7 @@
         document.querySelectorAll('.mode-item').forEach(item => item.classList.remove('active'));
         element.classList.add('active');
         currentMode = element.getAttribute('data-mode');
-        if (isConverting) {
-            ignoreMicUntil = Date.now() + 500;
-            updateVisuals();
-        }
+        if (isConverting) { ignoreMicUntil = Date.now() + 500; updateVisuals(); }
     }
 
     function adjust(type, amount) {
@@ -347,7 +335,6 @@
         let val = parseInt(target.innerText);
         val = Math.max(1, Math.min(20, val + amount));
         target.innerText = val;
-        // 再生中に音量を変更した場合も反映
         if (type === 'gain' && masterGain && isConverting) {
             masterGain.gain.setTargetAtTime(val, audioCtx.currentTime, 0.1);
         }
