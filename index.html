@@ -34,25 +34,25 @@
 
         header {
             width: 100%;
-            height: 12%;
+            height: auto; /* 高さを自動にしてpaddingを反映させやすく */
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding-top: 2dvh;
+            align-items: flex-start; /* 中央寄せではなく上寄せに変更 */
+            padding-top: 10px; /* ここで確実に10pxの隙間を作る */
             flex-shrink: 0;
         }
 
         .logo-img {
-            width: 50%;
-            min-width: 130px; 
-            max-width: 200px;
+            width: 40%;
+            min-width: 100px;
+            max-width: 160px;
             height: auto;
         }
 
         .spacer-flexible {
             flex-grow: 1;
-            max-height: 80px;
-            min-height: 10px;
+            max-height: 40px; 
+            min-height: 5px;
             width: 100%;
         }
 
@@ -66,17 +66,18 @@
         }
 
         .illust-layer {
-            width: min(280px, 65vw);
+            width: min(252px, 58.5vw);
             height: auto;
+            margin-top: 0; 
             object-fit: contain;
         }
 
-        /* エフェクトエリア（イラストの下、集音中の上） */
+        /* エフェクトエリア */
         #effects-section {
             width: 100%;
-            height: 100px; /* 隙間を広げたため少し高さを確保 */
+            height: 81px;
             position: relative;
-            margin: 10px 0;
+            margin: 5px 0; 
             flex-shrink: 0;
             display: flex;
             justify-content: center;
@@ -88,29 +89,27 @@
             width: 100%;
             height: 100%;
             display: none; 
-            justify-content: center; /* 中央寄せ */
+            justify-content: center;
             align-items: center;
-            gap: 20px; /* 左右画像とアニメーションの間の距離 */
+            gap: 16px;
         }
 
-        /* 左右の静止画 */
         .extra-layer {
-            width: 55px;
+            width: 45px;
             height: auto;
             object-fit: contain;
         }
 
-        /* 中央のアニメーションエリア */
         .teleport-container {
             display: flex;
-            gap: 100px; /* 指示通りアニメーションの間に100pxの隙間を配置 */
+            gap: 81px;
             justify-content: center;
             align-items: center;
         }
 
         .teleport-box {
-            width: 45px;
-            height: 45px;
+            width: 36px;
+            height: 36px;
         }
 
         .inner-img {
@@ -125,16 +124,22 @@
 
         /* 下部UIエリア */
         #bottom-ui {
+            position: fixed;
+            bottom: 20px; 
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
-            margin-top: auto; 
-            flex-shrink: 0;
+            max-width: 450px;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .status-text {
-            margin-bottom: 15px;
+            margin-top: 0; 
+            margin-bottom: 10px;
             width: 100%;
             text-align: center;
             font-size: 14px;
@@ -147,7 +152,7 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         #main-action-btn { 
@@ -170,13 +175,31 @@
         #mode-nav { display: flex; justify-content: center; gap: 30px; width: 100%; }
         .mode-item { opacity: 0.4; font-size: 16px; font-weight: bold; cursor: pointer; }
         .mode-item.active { opacity: 1; border-bottom: 2px solid #fff; }
+
+        /* 開発用コピーボタン */
+        #copy-source-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            font-size: 10px;
+            opacity: 0.3;
+            padding: 5px;
+            background: #444;
+            color: #fff;
+            border: 1px solid #666;
+            cursor: pointer;
+        }
+        #copy-source-btn:hover { opacity: 1; }
     </style>
 </head>
 <body>
 
+<button id="copy-source-btn">SOURCE COPY</button>
+
 <div id="app-container">
     <header>
-        <img src="img/neko-canceller_01.png" alt="ロゴ" class="logo-img" onclick="location.reload()">
+        <img src="img/neko-canceller_01.png" alt="ロゴ" class="logo-img" style="margin-top: 10px;" onclick="location.reload()">
     </header>
 
     <div class="spacer-flexible"></div>
@@ -249,6 +272,20 @@
 </div>
 
 <script>
+    // --- 開発用コピー機能 ---
+    document.getElementById('copy-source-btn').addEventListener('click', () => {
+        const clone = document.documentElement.cloneNode(true);
+        const btn = clone.querySelector('#copy-source-btn');
+        if(btn) btn.remove();
+        clone.querySelectorAll('script[src*="fiveserver"], style[id*="five"]').forEach(el => el.remove());
+        
+        const fullHtml = "<!DOCTYPE html>\n" + clone.outerHTML;
+        navigator.clipboard.writeText(fullHtml).then(() => {
+            alert("現在の状態をコピーしました！index.htmlに貼り付けて保存してください。");
+        });
+    });
+
+    // --- メインロジック ---
     let isConverting = false;
     let currentMode = "ねこ";
     let audioCtx, analyser, dataArray, masterGain;
